@@ -1,4 +1,5 @@
-const menuItem = document.getElementsByClassName("menu__item");
+const menuItem = document.querySelectorAll(".menu__item");
+let linkOpener = false;
 
 for (let menuItemElement of menuItem) {
   menuItemElement.onclick = () => {
@@ -13,7 +14,10 @@ for (let menuItemElement of menuItem) {
           item.querySelector(".menu_sub").classList.remove("menu_active");
         }
       });
-      return false;
+      return linkOpener;
+    } else {
+      linkOpener = true;
+      return true;
     }
   };
 }

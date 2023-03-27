@@ -4,6 +4,16 @@ let linkOpener = false;
 for (let menuItemElement of menuItem) {
   menuItemElement.onclick = () => {
     if (menuItemElement.contains(menuItemElement.querySelector(".menu_sub"))) {
+      if (
+        menuItemElement
+          .querySelector(".menu_sub")
+          .classList.contains("menu_active")
+      ) {
+        menuItemElement
+          .querySelector(".menu_sub")
+          .classList.remove("menu_active");
+        return linkOpener;
+      }
       menuItemElement.querySelector(".menu_sub").classList.add("menu_active");
       Array.from(menuItem).forEach((item) => {
         if (

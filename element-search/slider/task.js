@@ -3,37 +3,47 @@ const sliderArrowPrev =
 const sliderArrowNext =
   document.getElementsByClassName("slider__arrow_next")[0];
 const slideItems = document.querySelectorAll(".slider__item");
-let element = 0;
 const sliderDots = document.querySelectorAll(".slider__dot");
 
-function changeSlider() {
+function changeSlider(
+  index = Array.from(slideItems).findIndex((item) =>
+    item.classList.contains("slider__item_active")
+  )
+) {
   Array.from(slideItems).forEach((slideItem) =>
     slideItem.classList.remove("slider__item_active")
   );
-  slideItems[element + 1].classList.add("slider__item_active");
+  slideItems[index + 1].classList.add("slider__item_active");
 }
 
 sliderArrowNext.onclick = () => {
-  if (element > slideItems.length - 2) {
-    element = -1;
+  if (
+    Array.from(slideItems).findIndex((item) =>
+      item.classList.contains("slider__item_active")
+    ) >
+    slideItems.length - 2
+  ) {
+    changeSlider(-1);
+  } else {
+    changeSlider();
   }
-  changeSlider();
-  element++;
 };
 
 sliderArrowPrev.onclick = () => {
-  element = element - 2;
+  let element =
+    Array.from(slideItems).findIndex((item) =>
+      item.classList.contains("slider__item_active")
+    ) - 2;
   if (element < -1) {
-    element = slideItems.length + element;
+    changeSlider(slideItems.length + element);
+  } else {
+    changeSlider(element);
   }
-  changeSlider();
-  element++;
 };
 
 for (let i = 0; i < 5; i++) {
   sliderDots[i].onclick = () => {
-    element = i - 1;
-    changeSlider();
-    element += 1;
+    let element = i - 1;
+    changeSlider(element);
   };
 }

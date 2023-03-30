@@ -30,13 +30,60 @@ class Game {
       DOM-элемент текущего символа находится в свойстве this.currentSymbol.
      */
     const eventChecker = (event) => {
-      if (event.key.toLowerCase() === this.currentSymbol.textContent) {
+      let ckeckedSymbol = this.currentSymbol.textContent;
+      let inputSymbol = event.code;
+      if (
+        Object.entries(compareLetters)
+          .find((element) => element[0] === inputSymbol)[1]
+          .includes(ckeckedSymbol)
+      ) {
+        ckeckedSymbol = Object.entries(compareLetters).find(
+          (element) => element[0] === inputSymbol
+        )[0];
+      }
+      if (inputSymbol === ckeckedSymbol) {
         this.success();
       } else {
         this.fail();
       }
     };
     document.addEventListener("keypress", eventChecker);
+
+    const compareLetters = {
+      KeyQ: ["й", "q"],
+      KeyW: ["ц", "w"],
+      KeyE: ["у", "e"],
+      KeyR: ["к", "r"],
+      KeyT: ["е", "t"],
+      KeyY: ["н", "y"],
+      KeyU: ["г", "u"],
+      KeyI: ["ш", "i"],
+      KeyO: ["щ", "o"],
+      KeyP: ["з", "p"],
+      BracketLeft: ["х", "["],
+      BracketRight: ["ъ", "]"],
+      KeyA: ["ф", "a"],
+      KeyS: ["ы", "s"],
+      KeyD: ["в", "d"],
+      KeyF: ["а", "f"],
+      KeyG: ["п", "g"],
+      KeyH: ["р", "h"],
+      KeyJ: ["о", "j"],
+      KeyK: ["л", "k"],
+      KeyL: ["д", "l"],
+      Semicolon: ["ж", ";"],
+      Quote: ["э", "'"],
+      KeyZ: ["я", "z"],
+      KeyX: ["ч", "x"],
+      KeyC: ["с", "c"],
+      KeyV: ["м", "v"],
+      KeyB: ["и", "b"],
+      KeyN: ["т", "n"],
+      KeyM: ["ь", "m"],
+      Comma: ["б", ","],
+      Period: ["ю", "."],
+      Space: [" "],
+    };
   }
 
   timeout() {
@@ -99,17 +146,18 @@ class Game {
 
   getWord() {
     const words = [
-        "bob",
-        "awesome",
-        "netology",
+        "awesome домашка",
+        "нетология the best",
         "hello",
         "kitty",
-        "rock",
+        "рок vs поп",
         "youtube",
         "popcorn",
         "cinema",
-        "love",
+        "любовь",
         "javascript",
+        "я учу js",
+        "netology рулит",
       ],
       index = Math.floor(Math.random() * words.length);
 

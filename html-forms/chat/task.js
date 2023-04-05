@@ -5,23 +5,20 @@ const responseMessages = [
   "Кто тут?",
   "К сожалению, все операторы заняты",
   "Ожидайте ответа",
-  "Спасибо, что написали нам! До свидения!",
+  "Спасибо, что написали нам! До свидания!",
   "К сожалению, мы не можем ответить вам сейчас.",
 ];
 
-widget.addEventListener("click", function openWidget() {
-  if (!widget.classList.contains("widget.classList")) {
-    widget.classList.add("chat-widget_active");
-  }
-});
-
-function sendMessage(...classes) {
+// Добавляет сообщения в тело чата, как от автоответчика, так и от клиента
+function sendMessage(idle, ...classes) {
   const message = document.createElement("div");
   message.classList.add("message", ...classes);
   const msg = message.appendChild(document.createElement("div"));
   msg.classList.add("message__text");
-  msg.textContent =
-    input.value || responseMessages[Math.floor(Math.random() * 5)];
+  msg.textContent = idle
+    ? "Чем можем быть вам полезны?"
+    : input.value || responseMessages[Math.floor(Math.random() * 5)];
+
   if (input.value !== "") {
     input.value = "";
   }
@@ -34,28 +31,39 @@ function sendMessage(...classes) {
     hour12: false,
   })}`;
   chatContainer.appendChild(message);
+
+  // Автопрокрутка окна чата до последнего комментария
   chatContainer.parentElement.scrollTop =
     chatContainer.parentElement.scrollHeight;
+
+  clearInterval(idleInterval);
+  idleInterval = setInterval(doIfIdle, 30000);
 }
 
+// Инициирует отправку сообщений от клиента
 function addClientMessage() {
   input.addEventListener("keydown", function (event) {
     if (event.code === "Enter" && input.value.length > 0) {
       const clientClass = "message_client";
-      sendMessage(clientClass);
+      sendMessage(false, clientClass);
     }
   });
 }
 
-input.addEventListener("focus", addClientMessage);
-
-function response() {
-  sendMessage();
+// Инициирует ответ автоответчика
+function response(idle = false) {
+  sendMessage(idle);
 }
 
-const targetList = document.querySelector(".chat-widget__messages");
+// Инициирует ответ от автоответчика в случае, если клиент не отвечает 30 секунд
+function doIfIdle() {
+  if (widget.classList.contains("chat-widget_active")) {
+    response(true);
+  }
+}
 
-config = { attributes: true, childList: true, characterData: true };
+// Наблюдает за появлением новых сообщений от клиента в чате и вызывает автоответчик
+const config = { attributes: true, childList: true, characterData: true };
 const observer = new MutationObserver((targetList) => {
   for (const mutationRecord of targetList) {
     if (
@@ -67,4 +75,15 @@ const observer = new MutationObserver((targetList) => {
   }
 });
 
-observer.observe(targetList, config);
+// Открывает окно виджета
+widget.addEventListener("click", function openWidget() {
+  if (!widget.classList.contains("widget.classList")) {
+    widget.classList.add("chat-widget_active");
+  }
+});
+
+input.addEventListener("focus", addClientMessage);
+
+observer.observe(chatContainer, config);
+
+let idleInterval = setInterval(doIfIdle, 30000);

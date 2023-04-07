@@ -1,26 +1,20 @@
-const elementWithTooltip = document.querySelectorAll(".has-tooltip");
-
-function openTooltip(element) {
+function toggleTooltip(element) {
+  if (document.querySelector(".tooltip")) {
+    document.querySelector(".tooltip").remove();
+  }
   if (element.target.classList.contains("has-tooltip")) {
+    element.preventDefault();
     const tooltip = document.createElement("div");
     tooltip.classList.add("tooltip", "tooltip_active");
     tooltip.textContent = element.target.title;
+    const position = element.target.getBoundingClientRect();
+    let coordinatesX = position.x;
+    let coordinatesY = position.y;
+    let height = position.height;
+    tooltip.style.top = `${coordinatesY + height}px`;
+    tooltip.style.left = `${coordinatesX}px`;
     element.target.insertAdjacentElement("afterend", tooltip);
   }
 }
 
-function closeTooltip(element) {
-  if (element.target.classList.contains("has-tooltip")) {
-    if (document.querySelectorAll(".tooltip_active").length > 0) {
-      document.querySelector(".tooltip_active").remove();
-    }
-  }
-}
-
-for (const elementWithTooltipElement of elementWithTooltip) {
-  elementWithTooltipElement.addEventListener("mousedown", openTooltip);
-  elementWithTooltipElement.addEventListener("mouseup", closeTooltip);
-  elementWithTooltipElement.addEventListener("click", (element) => {
-    element.preventDefault();
-  });
-}
+document.body.addEventListener("click", toggleTooltip);

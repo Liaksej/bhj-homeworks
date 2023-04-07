@@ -1,7 +1,6 @@
 const inputPhrase = document.getElementById("task__input");
 
 function createTask(event) {
-  // Создание и вставка задачи в список
   const task = document.createElement("div");
   task.classList.add("task");
 
@@ -49,6 +48,31 @@ function deleteElement(element) {
   }
 }
 
+function saveToLocalStorage() {
+  localStorage.clear();
+  if (
+    document.getElementById("tasks__list") &&
+    document.getElementById("tasks__list").children
+  ) {
+    localStorage.setItem(
+      "taskList",
+      document.getElementById("tasks__list").outerHTML
+    );
+    localStorage.getItem("taskList");
+  }
+}
+
+function retrieveDataFromLocalStorage() {
+  if (window.localStorage.hasOwnProperty("taskList")) {
+    document.getElementById("tasks__list").outerHTML =
+      localStorage.getItem("taskList");
+  }
+}
+
 inputPhrase.addEventListener("input", doIfPrompt);
 
 document.body.addEventListener("click", deleteElement);
+
+window.addEventListener("beforeunload", saveToLocalStorage);
+
+window.addEventListener("load", retrieveDataFromLocalStorage);

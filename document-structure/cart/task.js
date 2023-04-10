@@ -2,6 +2,8 @@ const productQuantityContrlols = document.querySelectorAll(
   ".product__quantity-controls"
 );
 const productAddButtons = document.querySelectorAll(".product__add");
+const cart = document.querySelector(".cart").outerHTML.match(/[^\n]/g).join("");
+document.querySelector(".cart").remove();
 
 function changeQuantity(event) {
   let number = Number(
@@ -23,6 +25,7 @@ function changeQuantity(event) {
 function addToCart(event) {
   if (event.target.classList.contains("product__add")) {
     if (
+      document.querySelector(".cart__products") &&
       Array.from(document.querySelector(".cart__products").children).length >
         0 &&
       Array.from(document.querySelector(".cart__products").children).includes(
@@ -53,6 +56,10 @@ function addToCart(event) {
         )
       }`;
     } else {
+      if (!document.querySelector(".cart")) {
+        document.querySelector(".header").insertAdjacentHTML("afterend", cart);
+      }
+
       const cartProduct = document.createElement("div");
       cartProduct.classList.add("cart__product");
       cartProduct.dataset.id = event.target.closest(".product").dataset.id;
@@ -72,7 +79,31 @@ function addToCart(event) {
       cartProduct.appendChild(cartProductImage);
       cartProduct.appendChild(cartProductCount);
       document.querySelector(".cart__products").appendChild(cartProduct);
+
+      const deleteButton = document.createElement("div");
+      deleteButton.classList.add("product__add", "product__delete");
+      deleteButton.textContent = "Удалить из корзины";
+      event.target.closest(".product__quantity").appendChild(deleteButton);
     }
+  }
+}
+
+function deleteFromCart(event) {
+  if (event.target.classList.contains("product__delete")) {
+    document
+      .querySelector(
+        `.cart__product[data-id="${
+          event.target.closest(".product").dataset.id
+        }"]`
+      )
+      .remove();
+    event.target.remove();
+  }
+  if (
+    document.querySelector(".cart") &&
+    Array.from(document.querySelector(".cart__products").children).length === 0
+  ) {
+    document.querySelector(".cart").remove();
   }
 }
 
@@ -83,3 +114,5 @@ for (const productQuantityContrlol of productQuantityContrlols) {
 for (const productAddButton of productAddButtons) {
   productAddButton.addEventListener("click", addToCart);
 }
+
+document.addEventListener("click", deleteFromCart);

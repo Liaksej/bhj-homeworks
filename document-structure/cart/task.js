@@ -1,4 +1,4 @@
-const productQuantityContrlols = document.querySelectorAll(
+const productQuantityControls = document.querySelectorAll(
   ".product__quantity-controls"
 );
 const productAddButtons = document.querySelectorAll(".product__add");
@@ -91,6 +91,58 @@ function addToCart(event) {
       }
     }
   }
+  flightImg(event.target);
+}
+
+function flightImg(event) {
+  let startImagePosition = event
+    .closest(".product")
+    .querySelector(".product__image")
+    .getBoundingClientRect();
+
+  let endImagePosition = document
+    .querySelector(
+      `.cart__product[data-id="${event.closest(".product").dataset.id}"]`
+    )
+    .getBoundingClientRect();
+
+  let { topPass, leftPass } = {
+    topPass: (startImagePosition.top - endImagePosition.top) / 5,
+    leftPass: (endImagePosition.left - startImagePosition.left) / 5,
+  };
+
+  let copyImage = event
+    .closest(".product")
+    .querySelector(".product__image")
+    .cloneNode(true);
+
+  copyImage.style.position = "fixed";
+  copyImage.classList.add("copy__image");
+  copyImage.style.top = `${Math.round(startImagePosition.top)}px`;
+  copyImage.style.left = `${Math.round(startImagePosition.left)}px`;
+  document.body.appendChild(copyImage);
+
+  let interval = setInterval(() => {
+    if (
+      parseInt(document.querySelector(".copy__image").style.top, 10) -
+        endImagePosition.bottom >
+        15 ||
+      parseInt(document.querySelector(".copy__image").style.left, 10) -
+        endImagePosition.right >
+        5
+    ) {
+      document.querySelector(".copy__image").style.top = `${
+        parseInt(document.querySelector(".copy__image").style.top, 10) - topPass
+      }px`;
+      document.querySelector(".copy__image").style.left = `${
+        parseInt(document.querySelector(".copy__image").style.left, 10) +
+        leftPass
+      }px`;
+    } else {
+      document.querySelector(".copy__image").remove();
+      clearInterval(interval);
+    }
+  }, 50);
 }
 
 function deleteFromCart(event) {
@@ -145,8 +197,8 @@ function retrieveDataFromLocalStorage() {
   }
 }
 
-for (const productQuantityContrlol of productQuantityContrlols) {
-  productQuantityContrlol.addEventListener("click", changeQuantity);
+for (const productQuantityControl of productQuantityControls) {
+  productQuantityControl.addEventListener("click", changeQuantity);
 }
 
 for (const productAddButton of productAddButtons) {

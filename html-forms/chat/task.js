@@ -43,8 +43,12 @@ function sendMessage(idle, ...classes) {
 // Инициирует отправку сообщений от клиента
 function addClientMessage() {
   input.addEventListener("keydown", function (event) {
-    if (event.code === "Enter" && input.value.length > 0) {
-      const clientClass = "message_client";
+    if (
+      event.code === "Enter" &&
+      input.value.length > 0 &&
+      input.value.match(/\w/gm)
+    ) {
+      const clientClass = "message_client".trim();
       sendMessage(false, clientClass);
     }
   });

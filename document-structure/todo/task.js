@@ -28,13 +28,7 @@ function createTask(event) {
   }
 }
 
-function doIfPrompt(event) {
-  event.target.addEventListener("keydown", (event) => {
-    if (event.code === "Enter") {
-      event.preventDefault();
-      createTask(inputPhrase);
-    }
-  });
+function doIfPrompt() {
   document.getElementById("tasks__add").addEventListener("click", (event) => {
     event.preventDefault();
     createTask(inputPhrase);

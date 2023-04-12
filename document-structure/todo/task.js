@@ -1,7 +1,7 @@
 const inputPhrase = document.getElementById("task__input");
 
 function createTask(event) {
-  if (event.value.length > 0 && event.value.match(/\w/)) {
+  if (event.value.trim()) {
     const task = document.createElement("div");
     task.classList.add("task");
 

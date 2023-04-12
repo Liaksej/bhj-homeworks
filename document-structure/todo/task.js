@@ -4,18 +4,13 @@ function createTask(event) {
   if (event.value.trim()) {
     const task = document.createElement("div");
     task.classList.add("task");
-
-    const taskTitle = document.createElement("div");
-    taskTitle.classList.add("task__title");
-    taskTitle.textContent = event.value;
-
-    const taskRemove = document.createElement("a");
-    taskRemove.classList.add("task__remove");
-    taskRemove.href = "#";
-    taskRemove.textContent = "x";
-
-    task.appendChild(taskTitle);
-    task.appendChild(taskRemove);
+    task.innerHTML = `
+                    <div class="task__title">
+                        ${event.value}
+                    </div>
+                    <a class="task__remove" href="#">
+                        x
+                    </a>`;
 
     const taskContainer = document.getElementById("tasks__list");
 
@@ -43,23 +38,36 @@ function deleteElement(element) {
 }
 
 function saveToLocalStorage() {
-  localStorage.clear();
+  localStorage.removeItem("taskList");
   if (
     document.getElementById("tasks__list") &&
     document.getElementById("tasks__list").children
   ) {
-    localStorage.setItem(
-      "taskList",
-      document.getElementById("tasks__list").outerHTML
-    );
+    const itemsForStore = [];
+    for (const element of Array.from(
+      document.getElementById("tasks__list").children
+    )) {
+      itemsForStore.push(element.querySelector(".task__title").textContent);
+    }
+    localStorage.setItem("taskList", JSON.stringify(itemsForStore));
     localStorage.getItem("taskList");
   }
 }
 
 function retrieveDataFromLocalStorage() {
-  if (window.localStorage.hasOwnProperty("taskList")) {
-    document.getElementById("tasks__list").outerHTML =
-      localStorage.getItem("taskList");
+  if (localStorage.hasOwnProperty("taskList")) {
+    for (const element of JSON.parse(localStorage.getItem("taskList"))) {
+      const task = document.createElement("div");
+      task.classList.add("task");
+      task.innerHTML = `
+                    <div class="task__title">
+                        ${element}
+                    </div>
+                    <a class="task__remove" href="#">
+                        x
+                    </a>`;
+      document.getElementById("tasks__list").appendChild(task);
+    }
   }
 }
 

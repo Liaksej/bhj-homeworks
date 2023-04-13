@@ -50,7 +50,6 @@ function saveToLocalStorage() {
       itemsForStore.push(element.querySelector(".task__title").textContent);
     }
     localStorage.setItem("taskList", JSON.stringify(itemsForStore));
-    localStorage.getItem("taskList");
   }
 }
 
@@ -77,4 +76,4 @@ document.body.addEventListener("click", deleteElement);
 
 window.addEventListener("beforeunload", saveToLocalStorage);
 
-window.addEventListener("load", retrieveDataFromLocalStorage);
+retrieveDataFromLocalStorage();

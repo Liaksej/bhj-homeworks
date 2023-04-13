@@ -165,20 +165,36 @@ function deleteFromCart(event) {
 }
 
 function saveToLocalStorage() {
-  localStorage.clear();
+  localStorage.removeItem("cartList");
   if (
     document.querySelector(".cart") &&
     document.querySelector(".cart__products").children
   ) {
-    localStorage.setItem("cartList", document.querySelector(".cart").outerHTML);
-    localStorage.getItem("cartList");
+    const itemsForStore = [];
+    for (const element of Array.from(
+      document.querySelector(".cart__products").children
+    )) {
+      itemsForStore.push({
+        dataId: element.dataset.id,
+        imgSrc: element.querySelector(".cart__product-image").src,
+        productCount: element.querySelector(".cart__product-count").textContent,
+      });
+    }
+    localStorage.setItem("cartList", JSON.stringify(itemsForStore));
   }
 }
 
 function retrieveDataFromLocalStorage() {
   if (localStorage.hasOwnProperty("cartList")) {
-    document.querySelector(".cart").outerHTML =
-      localStorage.getItem("cartList");
+    for (const element of JSON.parse(localStorage.getItem("cartList"))) {
+      const item = document.createElement("div");
+      item.classList.add("cart__product");
+      item.dataset.id = element.dataId;
+      item.innerHTML = `
+                        <img class="cart__product-image" src="${element.imgSrc}">
+                        <div class="cart__product-count">${element.productCount}</div>`;
+      document.querySelector(".cart__products").appendChild(item);
+    }
   }
   if (document.querySelectorAll(".cart__product").length === 0) {
     document.querySelector(".cart").remove();
@@ -209,4 +225,4 @@ document.addEventListener("click", deleteFromCart);
 
 window.addEventListener("beforeunload", saveToLocalStorage);
 
-window.addEventListener("load", retrieveDataFromLocalStorage);
+retrieveDataFromLocalStorage();

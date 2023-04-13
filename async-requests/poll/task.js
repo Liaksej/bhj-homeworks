@@ -17,12 +17,12 @@ function createPage() {
 
 function buttonClick(event) {
   if (event.target.classList.contains("poll__answer")) {
-    let allButons = Array.from(
+    let allButtons = Array.from(
       document.getElementById("poll__answers").children
     );
 
-    for (let i = 0; i < allButons.length; i++) {
-      if (event.target.textContent === allButons[i].textContent) {
+    for (let i = 0; i < allButtons.length; i++) {
+      if (event.target.textContent === allButtons[i].textContent) {
         showResult(i);
         break;
       }
